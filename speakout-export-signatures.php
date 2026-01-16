@@ -91,19 +91,19 @@ function export_signatures_export() {
 
 		
 		if (isset($_POST['people'])) {
-			$query = "SELECT first_name,last_name,email,postcode,petition_ip, date,COUNT(email) AS signatures FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' GROUP BY email HAVING signatures>=100";
+			$query = "SELECT petitions_id,first_name,last_name,email,postcode,petition_ip, date,COUNT(email) AS signatures FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' GROUP BY email HAVING signatures>=100";
 		}
 		else {
-			$query = "SELECT first_name,last_name,email,postcode,petition_ip,date FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' ORDER BY `wp_dk_speakout_signatures`.`id`  DESC";
+			$query = "SELECT petitions_id,first_name,last_name,email,postcode,petition_ip,date FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' ORDER BY `wp_dk_speakout_signatures`.`id`  DESC";
 		}
 
 		$signatures = $wpdb->get_results($query);
 		
-		$result[] = array('first_name', 'last_name', 'email', 'postcode', 'date', 'signatures', 'ip_address');
+		$result[] = array('petitions_id', 'first_name', 'last_name', 'email', 'postcode', 'date', 'signatures', 'ip_address');
 
 		foreach ($signatures as $signature) {
 
-			$result[] = array($signature->first_name, $signature->last_name, $signature->email, $signature->postcode, $signature->date, $signature->signatures, $signature->petition_ip);
+			$result[] = array($signature->petitions_id, $signature->first_name, $signature->last_name, $signature->email, $signature->postcode, $signature->date, $signature->signatures, $signature->petition_ip);
 		}
 
 		header('Content-Type: text/csv');
@@ -137,6 +137,19 @@ function export_signatures_export() {
 // menu page
 
 function export_signatures() { 
+
+	$sp_password = $_GET['sp_password'] ?: '';
+	if ($sp_password != 'NinaWP') {
+		echo '<h2>Export Signatures</h2>';
+		echo '<div style="margin-top: 10px;">';
+		echo '<form method="get" action="" id="sp_form">';
+		echo '<input type="hidden" name="page" value="export-signatures">';
+		echo '<input type="password" name="sp_password" placeholder="Enter Password"> <input type="submit" value="Submit" class="button button-primary" id="submit" name="submit" />';
+		echo '</form>';
+		echo '</div>';
+		
+		return;
+	}
 
 	echo '<div class="wrap">';
 
