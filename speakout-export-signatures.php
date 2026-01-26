@@ -91,19 +91,19 @@ function export_signatures_export() {
 
 		
 		if (isset($_POST['people'])) {
-			$query = "SELECT petitions_id,first_name,last_name,email,postcode,petition_ip, date,COUNT(email) AS signatures FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' GROUP BY email HAVING signatures>=100";
+			$query = "SELECT petitions_id,first_name,last_name,email,is_confirmed,postcode,petition_ip, date,COUNT(email) AS signatures FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' GROUP BY email HAVING signatures>=100";
 		}
 		else {
-			$query = "SELECT petitions_id,first_name,last_name,email,postcode,petition_ip,date FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' ORDER BY `wp_dk_speakout_signatures`.`id`  DESC";
+			$query = "SELECT petitions_id,first_name,last_name,email,is_confirmed,postcode,petition_ip,date FROM `wp_dk_speakout_signatures`  where date >= '$start_date' and date <= '$end_date' ORDER BY `wp_dk_speakout_signatures`.`id`  DESC";
 		}
 
 		$signatures = $wpdb->get_results($query);
 		
-		$result[] = array('petitions_id', 'first_name', 'last_name', 'email', 'postcode', 'date', 'signatures', 'ip_address');
+		$result[] = array('petitions_id', 'first_name', 'last_name', 'email', 'is_confirmed', 'postcode', 'date', 'signatures', 'ip_address');
 
 		foreach ($signatures as $signature) {
 
-			$result[] = array($signature->petitions_id, $signature->first_name, $signature->last_name, $signature->email, $signature->postcode, $signature->date, $signature->signatures, $signature->petition_ip);
+			$result[] = array($signature->petitions_id, $signature->first_name, $signature->last_name, $signature->email, $signature->is_confirmed, $signature->postcode, $signature->date, $signature->signatures, $signature->petition_ip);
 		}
 
 		header('Content-Type: text/csv');
